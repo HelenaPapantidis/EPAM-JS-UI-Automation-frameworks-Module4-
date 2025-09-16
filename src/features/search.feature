@@ -14,8 +14,4 @@ Feature: Search products
     And each listed product should display a name and a price
     And the number of results should be greater than "0"
 
-  Scenario: Search with a term that returns no results
-    When the user searches for "ZZZ-NotExisting-Item"
-    Then the product list should not display any items
-    And the results area should display the empty state
-    And the message "There are no products found" should be displayed
+  

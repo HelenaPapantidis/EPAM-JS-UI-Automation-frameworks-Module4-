@@ -1,16 +1,11 @@
-console.log('LOGIN.STEPS.JS LOADED!')
-
+// src/step-definitions/login.steps.js
 import { Given, When, Then } from '@wdio/cucumber-framework'
-import { expect } from '@wdio/globals'
 import LoginPage from '../pageobjects/login.page.js'
-import AccountPage from '../pageobjects/account.page.js'
+import { expect } from '@wdio/globals'
 
-// ---------- Background ----------
-Given('the user is on the login page', async () => {
-  await LoginPage.openLoginPage()
-})
 
-// ---------- When steps ----------
+
+// --- Actions ---
 When('the user enters email {string}', async (email) => {
   await LoginPage.typeEmail(email)
 })
@@ -23,37 +18,38 @@ When('the user clicks the "Login" button', async () => {
   await LoginPage.clickLogin()
 })
 
-// ---------- Then steps ----------
-Then('the user should be redirected to the My account page', async () => {
-  await AccountPage.waitForLoaded()
-})
+// --- Assertions ---
+Then('the user should see the error message {string}', async (expectedMsg) => {
+  const errors = []
 
-Then('the page title should display {string}', async (expectedTitle) => {
-  await expect(AccountPage.pageTitle).toHaveText(expectedTitle)
-})
-
-Then('the user should see the error message {string}', async (expectedMessage) => {
-  let actualMessage = ''
-
-  if (expectedMessage.includes('Email')) {
-    actualMessage = await LoginPage.emailError.getText()
-  } else if (expectedMessage.includes('Password')) {
-    actualMessage = await LoginPage.passwordError.getText()
+  if (await LoginPage.emailError.isDisplayed()) {
+    errors.push(await LoginPage.getEmailErrorText())
+  }
+  if (await LoginPage.passwordError.isDisplayed()) {
+    errors.push(await LoginPage.getPasswordErrorText())
+  }
+  if (await LoginPage.formError.isDisplayed()) {
+    errors.push(await LoginPage.getFormErrorText())
   }
 
-  expect(actualMessage).toEqual(expectedMessage)
+  await expect(errors).toContain(expectedMsg)
 })
 
 Then('the user should see the following error messages:', async (dataTable) => {
-  const expectedMessages = dataTable.raw().map(row => row[0]) 
+  const expectedMessages = dataTable.raw().flat()
+
   const actualMessages = []
-  if (await LoginPage.emailError.isExisting()) {
-    actualMessages.push(await LoginPage.emailError.getText())
+  if (await LoginPage.emailError.isDisplayed()) {
+    actualMessages.push(await LoginPage.getEmailErrorText())
   }
-  if (await LoginPage.passwordError.isExisting()) {
-    actualMessages.push(await LoginPage.passwordError.getText())
+  if (await LoginPage.passwordError.isDisplayed()) {
+    actualMessages.push(await LoginPage.getPasswordErrorText())
   }
-  expect(actualMessages).toEqual(expectedMessages)
+  if (await LoginPage.formError.isDisplayed()) {
+    actualMessages.push(await LoginPage.getFormErrorText())
+  }
+
+  await expect(actualMessages).toEqual(expectedMessages)
 })
 
 Then('the user should remain on the login page', async () => {

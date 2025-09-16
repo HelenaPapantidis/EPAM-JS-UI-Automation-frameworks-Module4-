@@ -20,7 +20,7 @@ const SELECTORS = {
 
 class LoginPage extends BasePage {
   async openLoginPage() {
-    await this.open("/auth/login");
+    await this.open('auth/login');
   } 
 
   // inputs/buttons
@@ -52,26 +52,32 @@ class LoginPage extends BasePage {
     await this.passwordInput.setValue(password);
   }
   async clickLogin() {
-    await this.loginButton.click();
+    // PROVERENO rešenje
+    const btn = await this.loginButton;
+    await btn.waitForDisplayed({ timeout: 5000 });
+
+    // nekad pomogne scroll
+    await btn.scrollIntoView();
+
+    // klik na submit
+    await btn.click();
+
+    // fallback – ako klik ne submituje
+    if (!(await browser.getUrl()).includes('/account')) {
+      await browser.keys('Enter');
+    }
   }
 
  async getEmailErrorText() {
-    return this.emailError.getText()
+    return await this.emailError.getText()
   }
 
   async getPasswordErrorText() {
-    return this.passwordError.getText()
+    return await this.passwordError.getText()
   }
 
   async getFormErrorText() {
-    return this.formError.getText()
-  }
-
-
-  async signIn({ email, password }) {
-    await this.typeEmail(email);
-    await this.typePassword(password);
-    await this.clickLogin();
+    return await this.formError.getText()
   }
 
    async expectOnLoginPage() {

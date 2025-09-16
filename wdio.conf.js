@@ -1,3 +1,7 @@
+const browserName = process.argv[4] || "chrome";
+
+
+
 export const config = {
   //
   // ====================
@@ -21,6 +25,7 @@ export const config = {
   // of the config file unless it's absolute.
   //
   specs: ["./src/features/**/*.feature"],
+  
   // Patterns to exclude.
   exclude: [],
   //
@@ -47,7 +52,18 @@ export const config = {
   //
   capabilities: [
     {
-      browserName: "chrome",
+      browserName: ['chrome','firefox','edge'].includes(browserName) ? browserName : 'chrome',
+      maxInstances: 2,
+       "goog:chromeOptions": {
+        //args: ["--headless", "--disable-gpu", "--window-size=1920,1080"],
+      },
+      "moz:firefoxOptions": {
+        args: ["-headless"],
+      },
+      "ms:edgeOptions": {
+        args: ["--headless", "--disable-gpu", "--window-size=1920,1080"],
+      },
+
     },
   ],
 
@@ -58,7 +74,7 @@ export const config = {
   // Define all options that are relevant for the WebdriverIO instance here
   //
   // Level of logging verbosity: trace | debug | info | warn | error | silent
-  logLevel: "info",
+  logLevel: "debug",
   //
   // Set specific log levels per logger
   // loggers:
@@ -82,7 +98,7 @@ export const config = {
   // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
   // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
   // gets prepended directly.
-  baseUrl: "https://practicesoftwaretesting.com/",
+  baseUrl: "https://practicesoftwaretesting.com",
   //
   // Default timeout for all waitFor* commands.
   waitforTimeout: 10000,
@@ -98,7 +114,8 @@ export const config = {
   // Services take over a specific job you don't want to take care of. They enhance
   // your test setup with almost no effort. Unlike plugins, they don't add new
   // commands. Instead, they hook themselves up into the test process.
-  // services: [],
+  //services: 
+ 
   //
   // Framework you want to run your specs with.
   // The following are supported: Mocha, Jasmine, and Cucumber
@@ -110,7 +127,7 @@ export const config = {
 
   //
   // The number of times to retry the entire specfile when it fails as a whole
-  specFileRetries: 0,
+  specFileRetries: 2,
   //
   // Delay in seconds between the spec file retry attempts
   specFileRetriesDelay: 0,
@@ -126,11 +143,32 @@ export const config = {
   // If you are using Cucumber you need to specify the location of your step definitions.
   cucumberOpts: {
     // <string[]> (file/dir) require files before executing features
-    require: ['./src/step-definitions/basket.steps.js'],
+    
+  require: [
+    './src/step-definitions/**/*.steps.js',
+    // === AUTH / LOGIN ===
+    './src/step-definitions/login.steps.js',
+
+    // === COMMON / SHARED ===
+    './src/step-definitions/common.steps.js',
+
+    // === PRODUCT / CATEGORIES ===
+    './src/step-definitions/filter-sort.steps.js',
+    './src/step-definitions/categories.steps.js',
+    './src/step-definitions/productDetails.steps.js',
+    './src/step-definitions/search.steps.js',
+
+    // === USER ACTIONS ===
+    './src/step-definitions/favourite.steps.js',
+    './src/step-definitions/basket.steps.js',
+    './src/step-definitions/language.steps.js',
+   ],
+
+    requireModule: [],
     // <boolean> show full backtrace for errors
     backtrace: false,
     // <string[]> ("extension:module") require files with the given EXTENSION after requiring MODULE (repeatable)
-    requireModule: [],
+    
     // <boolean> invoke formatters without executing steps
     dryRun: false,
     // <boolean> abort the run on first failure

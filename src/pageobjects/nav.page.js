@@ -48,13 +48,32 @@ class NavBar extends BasePage {
     await this.userMenuToggle.click();
   }
 
+  //--- basket----
   async expectBasketBadge(expectedQty) {
     await expect(this.basketBadge).toHaveText(expectedQty);
   }
 
   async openBasket() {
-    await this.basketLink.click();
+  // if navbar is collapsed, open it
+  const toggler = await $('button.navbar-toggler');
+  if (await toggler.isExisting() && await toggler.isDisplayed()) {
+    const visible = await this.basketLink.isDisplayed().catch(() => false);
+    if (!visible) await toggler.click();
   }
+  await this.basketLink.waitForClickable({ timeout: 15000 });
+  await this.basketLink.click();
+
+}
+//------categories dropdown menu------
+ get categoriesMenu() {
+    return $('//a[normalize-space()="Categories"]');
+  }
+
+  async openCategory(category) {
+    await this.categoriesMenu.click(); // open categories dropdown
+    await $(`//a[normalize-space()="${category}"]`).click(); // click on desired category
+  }
+
 }
 
 export default new NavBar();

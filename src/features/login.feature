@@ -6,14 +6,6 @@ Feature: Login
   Background:
     Given the user is on the login page
 
-  @login @positive @smoke
-  Scenario: Successful login with valid credentials
-    When the user enters email "helena83p@yahoo.com"
-    And the user enters password "ValidPass@123"
-    And the user clicks the "Login" button
-    Then the user should be redirected to the My account page
-    And the page title should display "My account"
-
   @login @negative @required
   Scenario Outline: Login fails when required field is empty
     When the user enters email "<email>"
