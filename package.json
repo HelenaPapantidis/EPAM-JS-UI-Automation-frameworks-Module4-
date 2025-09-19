@@ -1,0 +1,26 @@
+{
+  "name": "epam-js-ui-automation-frameworks-module4",
+  "type": "module",
+  "devDependencies": {
+    "@wdio/allure-reporter": "^9.19.2",
+    "@wdio/cli": "^9.19.2",
+    "@wdio/cucumber-framework": "^9.19.2",
+    "@wdio/local-runner": "^9.19.2",
+    "@wdio/spec-reporter": "^9.19.2"
+   
+   },
+  "scripts": {
+  "wdio": "wdio run ./wdio.conf.js",
+
+   "test:chrome": "wdio run ./wdio.conf.js chrome",
+    "test:firefox": "wdio run ./wdio.conf.js firefox",
+    "test:edge": "wdio run ./wdio.conf.js MicrosoftEdge",
+
+    "test:login": "wdio run ./wdio.conf.js chrome --spec ./src/features/login.feature",
+    "test:basket": "wdio run ./wdio.conf.js chrome --spec ./src/features/basket.feature",
+
+    "test:parallel": "wdio run ./wdio.conf.js"
+}
+
+}
+
